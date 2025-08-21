@@ -18,28 +18,25 @@ test_that("test dropdown_input", {
                         si_str, fixed = TRUE)))
 })
 
-init_driver <- function(app) {
-  shinytest2::AppDriver$new(app)
-}
-
-test_app <- function(value, initial_value, multiple, choices = NULL, initial_choices = LETTERS) {
-  type <- if (multiple) "multiple" else ""
-  shiny::shinyApp(
-    ui = semanticPage(
-      dropdown_input("dropdown", initial_choices, value = initial_value, type = type),
-      shiny::actionButton("trigger", "Trigger")
-    ),
-    server = function(input, output, session) {
-      shiny::observeEvent(input$trigger, {
-        update_dropdown_input(session, "dropdown", value = value, choices = choices)
-      })
-    }
-  )
-}
 
 describe("update_dropdown_input", {
   skip_on_cran()
   local_edition(3)
+
+  test_app <- function(value, initial_value, multiple, choices = NULL, initial_choices = LETTERS) {
+    type <- if (multiple) "multiple" else ""
+    shiny::shinyApp(
+      ui = semanticPage(
+        dropdown_input("dropdown", initial_choices, value = initial_value, type = type),
+        shiny::actionButton("trigger", "Trigger")
+      ),
+      server = function(input, output, session) {
+        shiny::observeEvent(input$trigger, {
+          update_dropdown_input(session, "dropdown", value = value, choices = choices)
+        })
+      }
+    )
+  }
 
   it("is a no-op with NULL value", {
     # Arrange
